@@ -1,12 +1,18 @@
 package dev.mayuna.uzlabinamanager.velocity;
 
 import com.google.inject.Inject;
+import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.mayuna.uzlabinamanager.BuildConstants;
+import dev.mayuna.uzlabinamanager.common.Shared;
+import dev.mayuna.uzlabinamanager.common.SLogger;
+import dev.mayuna.uzlabinamanager.common.SharedConfig;
+import dev.mayuna.uzlabinamanager.common.util.PluginType;
+import dev.mayuna.uzlabinamanager.velocity.commands.StopCommand;
 import lombok.Getter;
 import org.slf4j.Logger;
 
@@ -24,14 +30,29 @@ public class VelocityMain {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-        logger.info("> UzlabinaManager - Velocity @ " + BuildConstants.VERSION);
+        Shared.setPluginType(PluginType.VELOCITY);
+
+        SLogger.info("> UzlabinaManager - Velocity @ " + BuildConstants.VERSION);
+
+        SLogger.info("Loading config...");
+        SharedConfig.load();
+
+        SLogger.info("Loading commands...");
+        loadCommands();
+
+        SLogger.info("Loading done!");
     }
 
     @Subscribe
     public void onProxyShutdown(ProxyShutdownEvent event) {
-        logger.info("Ukončuji UzlabinaManager...");
+        SLogger.info("Ukončuji UzlabinaManager...");
 
-        logger.info("o/");
+        SLogger.info("o/");
     }
 
+    private static void loadCommands() {
+        CommandManager commandManager = VelocityMain.getProxyServer().getCommandManager();
+
+        commandManager.register(commandManager.metaBuilder("stop").build(), new StopCommand());
+    }
 }
