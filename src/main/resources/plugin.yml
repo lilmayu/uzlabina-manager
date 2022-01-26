@@ -1,0 +1,7 @@
+name: UzlabinaManager
+version: '${version}'
+main: dev.mayuna.uzlabinamanager.paper.PaperMain
+api-version: 1.18
+authors: [ mayuna ]
+description: Plugin pro Úžlabinský Minecraft Server
+website: https://mayuna.dev
