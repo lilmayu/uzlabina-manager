@@ -7,5 +7,6 @@ import lombok.Setter;
 public class Shared {
 
     private static @Getter @Setter PluginType pluginType;
+    private static @Getter @Setter boolean debug;
 
 }

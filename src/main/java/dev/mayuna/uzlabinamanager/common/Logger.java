@@ -3,7 +3,7 @@ package dev.mayuna.uzlabinamanager.common;
 import dev.mayuna.uzlabinamanager.paper.PaperMain;
 import dev.mayuna.uzlabinamanager.velocity.VelocityMain;
 
-public class SLogger {
+public class Logger {
 
     public static void info(String message) {
         process(LogType.INFO, message);
@@ -22,8 +22,10 @@ public class SLogger {
     }
 
     public static void debug(String message) {
+        /*
         if (SharedConfig.isDebug())
             process(LogType.DEBUG, message);
+        */
     }
 
     private static void process(LogType logType, String message) {

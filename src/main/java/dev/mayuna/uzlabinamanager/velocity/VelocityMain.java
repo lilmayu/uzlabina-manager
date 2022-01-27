@@ -9,21 +9,20 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import dev.mayuna.uzlabinamanager.BuildConstants;
 import dev.mayuna.uzlabinamanager.common.Shared;
-import dev.mayuna.uzlabinamanager.common.SLogger;
-import dev.mayuna.uzlabinamanager.common.SharedConfig;
+import dev.mayuna.uzlabinamanager.common.Logger;
 import dev.mayuna.uzlabinamanager.common.util.PluginType;
 import dev.mayuna.uzlabinamanager.velocity.commands.StopCommand;
+import dev.mayuna.uzlabinamanager.velocity.objects.VelocityConfig;
 import lombok.Getter;
-import org.slf4j.Logger;
 
 @Plugin(id = "uzlabinamanager", name = "UzlabinaManager", version = BuildConstants.VERSION, description = "Velocity Plugin pro Úžlabinský Minecraft Server", url = "https://mayuna.dev", authors = {"mayuna#8016"})
 public class VelocityMain {
 
     private static @Getter ProxyServer proxyServer;
-    private static @Getter Logger logger;
+    private static @Getter org.slf4j.Logger logger;
 
     @Inject
-    public VelocityMain(ProxyServer proxyServer, Logger logger) {
+    public VelocityMain(ProxyServer proxyServer, org.slf4j.Logger logger) {
         VelocityMain.proxyServer = proxyServer;
         VelocityMain.logger = logger;
     }
@@ -32,22 +31,23 @@ public class VelocityMain {
     public void onProxyInitialization(ProxyInitializeEvent event) {
         Shared.setPluginType(PluginType.VELOCITY);
 
-        SLogger.info("> UzlabinaManager - Velocity @ " + BuildConstants.VERSION);
+        Logger.info("> UzlabinaManager - Velocity @ " + BuildConstants.VERSION);
+        Logger.info("> Made by mayuna#8016");
 
-        SLogger.info("Loading config...");
-        SharedConfig.load();
+        Logger.info("Loading config...");
+        VelocityConfig.load();
 
-        SLogger.info("Loading commands...");
+        Logger.info("Loading commands...");
         loadCommands();
 
-        SLogger.info("Loading done!");
+        Logger.info("Loading done!");
     }
 
     @Subscribe
     public void onProxyShutdown(ProxyShutdownEvent event) {
-        SLogger.info("Ukončuji UzlabinaManager...");
+        Logger.info("Ukončuji UzlabinaManager...");
 
-        SLogger.info("o/");
+        Logger.info("o/");
     }
 
     private static void loadCommands() {
