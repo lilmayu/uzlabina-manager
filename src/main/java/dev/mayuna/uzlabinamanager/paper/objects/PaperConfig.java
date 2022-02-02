@@ -2,9 +2,11 @@ package dev.mayuna.uzlabinamanager.paper.objects;
 
 import dev.mayuna.uzlabinamanager.common.Shared;
 import dev.mayuna.uzlabinamanager.paper.PaperMain;
+import dev.mayuna.uzlabinamanager.paper.objects.config.ConfigMessage;
+import dev.mayuna.uzlabinamanager.paper.objects.config.ConfigScoreboard;
+import dev.mayuna.uzlabinamanager.paper.objects.config.ConfigSound;
 import lombok.Getter;
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
@@ -12,17 +14,27 @@ import java.util.List;
 
 public class PaperConfig {
 
-    private static @Getter Location lobbySpawnLocation;
+    private static @Getter ServerType serverType = ServerType.UNKNOWN;
 
-    private static @Getter boolean lobbyDisabledBreakingEnabled = true;
-    private static @Getter boolean lobbyDisabledBreakingIgnoreCreative = true;
-    private static @Getter List<String> lobbyDisableBreakingWorlds = new ArrayList<>();
+    // Anti block break
+    private static @Getter boolean antiBlockBreakEnabled = true;
+    private static @Getter boolean antiBlockBreakIgnoreCreative = true;
+    private static @Getter List<String> antiBlockBreakWhitelistedWorlds = new ArrayList<>();
 
-    private static @Getter boolean onAuthSoundEnabled = true;
-    private static @Getter float onAuthSoundVolume = 1.0f;
-    private static @Getter float onAuthSoundPitch = 1.0f;
-    private static @Getter Sound onAuthSound = Sound.ENTITY_PLAYER_LEVELUP;
-    private static @Getter List<String> onAuthMessage = new ArrayList<>();
+    // On auth
+    private static @Getter ConfigSound onAuthSound;
+    private static @Getter ConfigMessage onAuthMessage;
+
+    // On join
+    private static @Getter ConfigSound onJoinSound;
+    private static @Getter ConfigMessage onJoinMessage;
+    private static @Getter Location onJoinSpawnLocation;
+
+    // Scoreboard
+    private static @Getter ConfigScoreboard scoreboard;
+
+    // Pressure plate boosts
+
 
     public static void load() {
         PaperMain.getInstance().getConfig().options().copyDefaults(true);
@@ -30,26 +42,33 @@ public class PaperConfig {
 
         FileConfiguration config = PaperMain.getInstance().getConfig();
 
-        // Shared
+        // == Shared
         Shared.setDebug(config.getBoolean("debug"));
 
-        // Config
-        lobbySpawnLocation = config.getLocation("lobby.spawn-location");
+        // == Config
+        serverType = ServerType.valueOfProtected(config.getString("server-type"));
 
-        lobbyDisabledBreakingEnabled = config.getBoolean("lobby.disabled-breaking.enabled");
-        lobbyDisabledBreakingIgnoreCreative = config.getBoolean("lobby.disabled-breaking.ignore-creative");
-        lobbyDisableBreakingWorlds = config.getStringList("lobby.disabled-breaking.worlds");
+        // Anti block break
+        antiBlockBreakEnabled = config.getBoolean("anti-block-break.enabled");
+        antiBlockBreakIgnoreCreative = config.getBoolean("anti-block-break.ignore-creative");
+        antiBlockBreakWhitelistedWorlds = config.getStringList("anti-block-break.whitelisted-worlds");
 
-        onAuthSoundEnabled = config.getBoolean("lobby.on-auth.sound.enabled");
-        onAuthSoundVolume = (float) config.getDouble("lobby.on-auth.sound.volume");
-        onAuthSoundPitch = (float) config.getDouble("lobby.on-auth.sound.pitch");
-        onAuthSound = Sound.valueOf(config.getString("lobby.on-auth.sound.name"));
-        onAuthMessage = config.getStringList("lobby.on-auth.message");
+        // On join
+        onJoinSound = config.getObject("on-join.sound", ConfigSound.class);
+        onJoinMessage = config.getObject("on-join.message", ConfigMessage.class);
+        onJoinSpawnLocation = config.getLocation("on-join.spawn-location");
+
+        // On auth
+        onAuthSound = config.getObject("on-auth.sound", ConfigSound.class);
+        onAuthMessage = config.getObject("on-auth.message", ConfigMessage.class);
+
+        // Scoreboard
+        scoreboard = config.getObject("scoreboard", ConfigScoreboard.class);
     }
 
-    public static void setLobbySpawnLocation(Location location) {
-        lobbySpawnLocation = location;
-        PaperMain.getInstance().getConfig().set("lobby.spawn-location", lobbySpawnLocation);
+    public static void setOnJoinSpawnLocation(Location location) {
+        onJoinSpawnLocation = location;
+        PaperMain.getInstance().getConfig().set("on-join.spawn-location", onJoinSpawnLocation);
         PaperMain.getInstance().saveConfig();
     }
 }

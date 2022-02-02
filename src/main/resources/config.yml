@@ -1,18 +1,58 @@
 debug: false
 
-lobby:
-  disabled-breaking:
+server-type: UNKNOWN
+
+anti-block-break:
+  disabled: true
+  ignore-creative: true
+  whitelisted-worlds:
+    - lobby
+    - lobby_end
+
+on-join:
+  sound:
+    ==: ConfigSound
     enabled: true
-    ignore-creative: true
-    worlds:
-      - lobby
-      - lobby_net
+    name: ENTITY_PLAYER_LEVELUP
+    volume: 1.0
+    pitch: 1.0
+  message:
+    ==: ConfigMessage
+    enabled: true
+    content:
+      - "§eWelcome join!"
   spawn-location:
-  on-auth:
-    sound:
-      enabled: true
-      name: ENTITY_PLAYER_LEVELUP
-      volume: 1.0
-      pitch: 1.0
-    message:
-      - "§eWelcome!"
+
+on-auth:
+  sound:
+    ==: ConfigSound
+    enabled: true
+    name: ENTITY_PLAYER_LEVELUP
+    volume: 1.0
+    pitch: 1.0
+  message:
+    ==: ConfigMessage
+    enabled: true
+    content:
+      - "§eWelcome auth!"
+
+pressure-plate-boosts:
+  enabled: false
+  type: HEAVY_WEIGHTED_PRESSURE_PLATE
+  sound:
+    ==: ConfigSound
+    enabled: true
+    name: ENTITY_DRAGON_FIREBALL_EXPLODE
+    volume: 1.0
+    pitch: 1.0
+  strength: ## material;velocity multiplier
+    - "GOLD_BLOCK;2.7"
+
+scoreboard:
+  ==: ConfigScoreboard
+  enabled: true
+  title: "§eSurvival"
+  lines:
+    - "First line"
+    - "Second line"
+    - "poggers!"

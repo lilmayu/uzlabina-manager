@@ -2,6 +2,8 @@ package dev.mayuna.uzlabinamanager.paper.util;
 
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
+
 public class PaperMessageInfo {
 
     /**
@@ -42,5 +44,11 @@ public class PaperMessageInfo {
 
     private static void send(CommandSender commandSender, String message) {
         commandSender.sendMessage(message);
+    }
+
+    public static void sendLines(CommandSender sender, List<String> lines) {
+        for (String line : lines) {
+            sender.sendMessage(line);
+        }
     }
 }

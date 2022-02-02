@@ -11,7 +11,7 @@ import dev.mayuna.uzlabinamanager.paper.util.PaperMessageInfo;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-@CommandAlias("uzlabina|uz")
+@CommandAlias("uzlabina|uz|/uzlabina|/uz")
 public class UzlabinaCommand extends BaseCommand {
 
     @Subcommand("set lobby-spawn")
@@ -22,7 +22,7 @@ public class UzlabinaCommand extends BaseCommand {
             return;
         }
 
-        PaperConfig.setLobbySpawnLocation(player.getLocation());
+        PaperConfig.setOnJoinSpawnLocation(player.getLocation());
 
         PaperMessageInfo.success(sender, "Lobby spawn byl nastaven na tvou momentální pozici!");
     }

@@ -7,3 +7,6 @@ description: Plugin pro Úžlabinský Minecraft Server
 website: https://mayuna.dev
 depend:
   - Multiverse-Core
+  - PlaceholderAPI
+softdepend:
+  - OpeNLogin
