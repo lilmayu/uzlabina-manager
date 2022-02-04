@@ -14,9 +14,9 @@ import org.bukkit.entity.Player;
 @CommandAlias("uzlabina|uz|/uzlabina|/uz")
 public class UzlabinaCommand extends BaseCommand {
 
-    @Subcommand("set lobby-spawn")
+    @Subcommand("set spawn")
     @CommandPermission("uzlabinamanager.admin")
-    public void setLobbySpawn(CommandSender sender) {
+    public void setSpawn(CommandSender sender) {
         if (!(sender instanceof Player player)) {
             Logger.error("This command is for players only!");
             return;
@@ -24,7 +24,7 @@ public class UzlabinaCommand extends BaseCommand {
 
         PaperConfig.setOnJoinSpawnLocation(player.getLocation());
 
-        PaperMessageInfo.success(sender, "Lobby spawn byl nastaven na tvou momentální pozici!");
+        PaperMessageInfo.success(sender, "Spawn byl nastaven na tvou momentální pozici!");
     }
 
     @Subcommand("reload")

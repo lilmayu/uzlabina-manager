@@ -10,3 +10,4 @@ depend:
   - PlaceholderAPI
 softdepend:
   - OpeNLogin
+  - Vault

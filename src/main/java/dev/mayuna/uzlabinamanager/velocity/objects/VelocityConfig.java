@@ -1,6 +1,7 @@
 package dev.mayuna.uzlabinamanager.velocity.objects;
 
 import dev.mayuna.uzlabinamanager.common.Logger;
+import dev.mayuna.uzlabinamanager.velocity.util.VelocityUtils;
 import lombok.Getter;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.loader.ConfigurationLoader;
@@ -18,6 +19,9 @@ public class VelocityConfig {
 
     // Config
     private static @Getter boolean autologinEnabled = false;
+    private static @Getter String lobbyServerName = "lobby";
+
+    private static @Getter boolean kickOnInvalidLobbyServer = true;
 
     public static void load() {
         CommentedConfigurationNode node = null;
@@ -32,17 +36,14 @@ public class VelocityConfig {
         }
 
         autologinEnabled = node.node("autologinEnabled").getBoolean(false);
+        lobbyServerName = node.node("lobbyServerName").getString("lobby");
+
+        kickOnInvalidLobbyServer = node.node("kickOnInvalidLobbyServer").getBoolean(false);
     }
 
     private static ConfigurationLoader<CommentedConfigurationNode> createConfigFile() {
-        final File configFilesLocation = Paths.get("plugins/UzlabinaManager").toFile();
-        final Path configFileLocation = Paths.get(configFilesLocation + "/config.yml");
-
-        if (!configFilesLocation.exists()) {
-            if (!configFilesLocation.mkdirs()) {
-                throw new IllegalStateException("Unable to create config directory!");
-            }
-        }
+        File configFilesLocation = VelocityUtils.getPluginFolder();
+        Path configFileLocation = Paths.get(configFilesLocation + "/config.yml");
 
         if (!Files.exists(configFileLocation)) {
             try {

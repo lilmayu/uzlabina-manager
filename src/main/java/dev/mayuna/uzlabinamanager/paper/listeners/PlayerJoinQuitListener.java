@@ -1,9 +1,11 @@
 package dev.mayuna.uzlabinamanager.paper.listeners;
 
-import com.nickuc.openlogin.bukkit.api.events.AsyncAuthenticateEvent;
 import dev.mayuna.uzlabinamanager.common.Logger;
 import dev.mayuna.uzlabinamanager.paper.managers.ScoreboardManager;
+import dev.mayuna.uzlabinamanager.paper.managers.UzlabinaPlayerManager;
 import dev.mayuna.uzlabinamanager.paper.objects.PaperConfig;
+import dev.mayuna.uzlabinamanager.paper.util.BukkitUtils;
+import dev.mayuna.uzlabinamanager.paper.util.ChatUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,7 +36,16 @@ public class PlayerJoinQuitListener implements Listener {
             PaperConfig.getOnJoinSound().play(player);
         }
 
+        if (PaperConfig.isOnJoinInformPlayerAboutAutologin()) {
+            if (BukkitUtils.isPremiumNickWithOfflineUUID(player.getName(), player.getUniqueId())) {
+                if (!UzlabinaPlayerManager.getOrCreatePlayer(player).isTogglePremiumWarningMessage()) {
+                    ChatUtils.sendAutologinInfo(player);
+                }
+            }
+        }
+
         ScoreboardManager.setupPlayer(player);
+        UzlabinaPlayerManager.getOrCreatePlayer(player);
     }
 
     @EventHandler
@@ -45,22 +56,5 @@ public class PlayerJoinQuitListener implements Listener {
         Logger.info("Saving player " + player.getName() + " (" + player.getUniqueId() + ")...");
 
         ScoreboardManager.removePlayer(player);
-    }
-
-    // OpeNLogin listeners
-
-
-    @EventHandler
-    public void onPlayerAuthenticate(AsyncAuthenticateEvent event) {
-        Player player = event.getPlayer();
-
-        // On-auth
-        if (PaperConfig.getOnAuthMessage() != null) {
-            PaperConfig.getOnAuthMessage().send(player);
-        }
-
-        if (PaperConfig.getOnAuthSound() != null) {
-            PaperConfig.getOnAuthSound().play(player);
-        }
     }
 }

@@ -3,6 +3,7 @@ package dev.mayuna.uzlabinamanager.paper.objects;
 public enum ServerType {
 
     UNKNOWN,
+    LOGIN,
     LOBBY,
     SURVIVAL,
     OLD_VANILLA;

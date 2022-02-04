@@ -2,9 +2,15 @@ package dev.mayuna.uzlabinamanager.paper.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
 import com.gmail.tracebachi.SockExchange.Spigot.SockExchangeApi;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+import dev.mayuna.mayuslibrary.utils.StringUtils;
+import dev.mayuna.uzlabinamanager.paper.PaperMain;
 import dev.mayuna.uzlabinamanager.paper.util.PaperMessageInfo;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -46,15 +52,26 @@ public class ServerCommand extends BaseCommand {
         movePlayerToServer(player, "lobby", "Lobby");
     }
 
-    private void movePlayerToServer(Player player, String serverName, String serverNamePretty) {
-        SockExchangeApi api = SockExchangeApi.instance();
+    @Subcommand("sendother")
+    @CommandPermission("uzlabinamanager.admin")
+    public void sendOtherPlayerToServer(CommandSender sender, String playerName, String server) {
+        Player player = Bukkit.getPlayer(playerName);
 
-        if (api.getServerInfo(serverName) != null || !api.getServerInfo(serverName).isOnline()) {
-            PaperMessageInfo.warning(player, serverNamePretty + " není online! Pokud tato chyba přetrvává, napiš nám.");
+        if (player == null) {
+            PaperMessageInfo.error(sender, "Tento hráč není online!");
             return;
         }
 
+        PaperMessageInfo.success(sender, "Posílám hráče §e" + player.getName() + "§a na server §e" + server + "§a!");
+        movePlayerToServer(player, server, StringUtils.prettyString(server));
+    }
+
+    public static void movePlayerToServer(Player player, String serverName, String serverNamePretty) {
         PaperMessageInfo.info(player, "Teleportuji tě na server §e" + serverNamePretty + "§7...");
-        api.movePlayers(Set.of(player.getName()), serverName);
+
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("Connect");
+        out.writeUTF(serverName);
+        player.sendPluginMessage(PaperMain.getInstance(), "BungeeCord", out.toByteArray());
     }
 }

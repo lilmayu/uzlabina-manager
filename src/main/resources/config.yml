@@ -10,6 +10,7 @@ anti-block-break:
     - lobby_end
 
 on-join:
+  inform-player-about-autologin: true
   sound:
     ==: ConfigSound
     enabled: true
@@ -35,18 +36,21 @@ on-auth:
     enabled: true
     content:
       - "§eWelcome auth!"
+  move-to-server:
+    enabled: false
+    server-name: "lobby"
 
-pressure-plate-boosts:
-  enabled: false
-  type: HEAVY_WEIGHTED_PRESSURE_PLATE
-  sound:
-    ==: ConfigSound
-    enabled: true
-    name: ENTITY_DRAGON_FIREBALL_EXPLODE
-    volume: 1.0
-    pitch: 1.0
-  strength: ## material;velocity multiplier
-    - "GOLD_BLOCK;2.7"
+#pressure-plate-boosts:
+#  enabled: false
+#  type: HEAVY_WEIGHTED_PRESSURE_PLATE
+#  sound:
+#    ==: ConfigSound
+#    enabled: true
+#    name: ENTITY_DRAGON_FIREBALL_EXPLODE
+#    volume: 1.0
+#    pitch: 1.0
+#  strength: ## material;velocity multiplier
+#    - "GOLD_BLOCK;2.7"
 
 scoreboard:
   ==: ConfigScoreboard
@@ -56,3 +60,10 @@ scoreboard:
     - "First line"
     - "Second line"
     - "poggers!"
+
+economy:
+  enabled: false
+  currency: CZK
+
+misc:
+  discord-invite-link: https://discord.gg/HpPJHtPE3t

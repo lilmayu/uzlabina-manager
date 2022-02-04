@@ -24,17 +24,26 @@ public class PaperConfig {
     // On auth
     private static @Getter ConfigSound onAuthSound;
     private static @Getter ConfigMessage onAuthMessage;
+    private static @Getter boolean onAuthMoveToServerEnabled;
+    private static @Getter String onAuthServerName;
 
     // On join
     private static @Getter ConfigSound onJoinSound;
     private static @Getter ConfigMessage onJoinMessage;
     private static @Getter Location onJoinSpawnLocation;
+    private static @Getter boolean onJoinInformPlayerAboutAutologin;
 
     // Scoreboard
     private static @Getter ConfigScoreboard scoreboard;
 
-    // Pressure plate boosts
+    // Economy
+    private static @Getter boolean economyEnabled;
+    private static @Getter String economyCurrency;
 
+    // Misc
+    private static @Getter String miscDiscordInviteLink;
+
+    // Pressure plate boosts
 
     public static void load() {
         PaperMain.getInstance().getConfig().options().copyDefaults(true);
@@ -57,13 +66,23 @@ public class PaperConfig {
         onJoinSound = config.getObject("on-join.sound", ConfigSound.class);
         onJoinMessage = config.getObject("on-join.message", ConfigMessage.class);
         onJoinSpawnLocation = config.getLocation("on-join.spawn-location");
+        onJoinInformPlayerAboutAutologin = config.getBoolean("on-join.inform-player-about-autologin");
 
         // On auth
         onAuthSound = config.getObject("on-auth.sound", ConfigSound.class);
         onAuthMessage = config.getObject("on-auth.message", ConfigMessage.class);
+        onAuthMoveToServerEnabled = config.getBoolean("on-auth.move-to-server.enabled");
+        onAuthServerName = config.getString("on-auth.move-to-server.server-name");
 
         // Scoreboard
         scoreboard = config.getObject("scoreboard", ConfigScoreboard.class);
+
+        // Economy
+        economyEnabled = config.getBoolean("economy.enabled");
+        economyCurrency = config.getString("economy.currency");
+
+        // Misc
+        miscDiscordInviteLink = config.getString("misc.discord-invite-link");
     }
 
     public static void setOnJoinSpawnLocation(Location location) {

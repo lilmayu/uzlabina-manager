@@ -75,6 +75,9 @@ dependencies {
     // IridiumColorAPI
     implementation "com.iridium:IridiumColorAPI:1.0.6"
 
+    // VaultAPI
+    compileOnly "com.github.MilkBowl:VaultAPI:1.7"
+
     // GSON
     implementation 'com.google.code.gson:gson:2.8.9'
 

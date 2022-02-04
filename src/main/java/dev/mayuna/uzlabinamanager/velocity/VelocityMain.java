@@ -12,9 +12,11 @@ import dev.mayuna.uzlabinamanager.BuildConstants;
 import dev.mayuna.uzlabinamanager.common.Shared;
 import dev.mayuna.uzlabinamanager.common.Logger;
 import dev.mayuna.uzlabinamanager.common.util.PluginType;
+import dev.mayuna.uzlabinamanager.common.util.Utils;
 import dev.mayuna.uzlabinamanager.velocity.commands.AutologinCommand;
 import dev.mayuna.uzlabinamanager.velocity.commands.StopCommand;
-import dev.mayuna.uzlabinamanager.velocity.listeners.PlayerListener;
+import dev.mayuna.uzlabinamanager.velocity.listeners.ConnectionListener;
+import dev.mayuna.uzlabinamanager.velocity.managers.VelocityPlayerManager;
 import dev.mayuna.uzlabinamanager.velocity.objects.VelocityConfig;
 import lombok.Getter;
 
@@ -34,6 +36,7 @@ public class VelocityMain {
     public void onProxyInitialization(ProxyInitializeEvent event) {
         Shared.setPluginType(PluginType.VELOCITY);
 
+        Utils.printLogo();
         Logger.info("> UzlabinaManager - Velocity @ " + BuildConstants.VERSION);
         Logger.info("> Made by mayuna#8016");
 
@@ -46,12 +49,17 @@ public class VelocityMain {
         Logger.info("Loading commands...");
         loadCommands();
 
-        Logger.info("Loading done!");
+        Logger.info("Loading managers...");
+        loadManagers();
+
+        Logger.success("Loading done!");
     }
 
     @Subscribe
     public void onProxyShutdown(ProxyShutdownEvent event) {
         Logger.info("Shutting down UzlabinaManager...");
+
+        VelocityPlayerManager.save();
 
         Logger.info("o/");
     }
@@ -59,7 +67,7 @@ public class VelocityMain {
     private void registerListeners() {
         EventManager eventManager = proxyServer.getEventManager();
 
-        eventManager.register(this, new PlayerListener());
+        eventManager.register(this, new ConnectionListener());
     }
 
     private static void loadCommands() {
@@ -67,5 +75,9 @@ public class VelocityMain {
 
         commandManager.register(commandManager.metaBuilder("stop").build(), new StopCommand());
         commandManager.register(commandManager.metaBuilder("autologin").build(), new AutologinCommand());
+    }
+
+    private static void loadManagers() {
+        VelocityPlayerManager.init();
     }
 }

@@ -22,10 +22,9 @@ public class Logger {
     }
 
     public static void debug(String message) {
-        /*
-        if (SharedConfig.isDebug())
+        if (Shared.isDebug())
             process(LogType.DEBUG, message);
-        */
+
     }
 
     private static void process(LogType logType, String message) {

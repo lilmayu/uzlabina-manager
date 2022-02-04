@@ -1,4 +1,4 @@
-package dev.mayuna.uzlabinamanager.common.util;
+package dev.mayuna.uzlabinamanager.paper.util;
 
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
