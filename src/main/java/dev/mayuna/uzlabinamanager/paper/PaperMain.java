@@ -6,14 +6,12 @@ import dev.mayuna.uzlabinamanager.common.Shared;
 import dev.mayuna.uzlabinamanager.common.util.PluginType;
 import dev.mayuna.uzlabinamanager.common.util.Utils;
 import dev.mayuna.uzlabinamanager.paper.commands.*;
-import dev.mayuna.uzlabinamanager.paper.listeners.OpeNLoginListener;
-import dev.mayuna.uzlabinamanager.paper.listeners.PlayerBlockBreakListener;
-import dev.mayuna.uzlabinamanager.paper.listeners.PlayerJoinQuitListener;
-import dev.mayuna.uzlabinamanager.paper.listeners.PressurePlateListener;
+import dev.mayuna.uzlabinamanager.paper.listeners.*;
 import dev.mayuna.uzlabinamanager.paper.managers.EconomyManager;
 import dev.mayuna.uzlabinamanager.paper.managers.ScoreboardManager;
 import dev.mayuna.uzlabinamanager.paper.managers.UzlabinaPlayerManager;
 import dev.mayuna.uzlabinamanager.paper.objects.PaperConfig;
+import dev.mayuna.uzlabinamanager.paper.objects.config.ConfigDisableInteraction;
 import dev.mayuna.uzlabinamanager.paper.objects.config.ConfigMessage;
 import dev.mayuna.uzlabinamanager.paper.objects.config.ConfigScoreboard;
 import dev.mayuna.uzlabinamanager.paper.objects.config.ConfigSound;
@@ -27,30 +25,38 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class PaperMain extends JavaPlugin {
 
     private static @Getter PaperMain instance;
+    private static @Getter boolean crashed;
 
     @Override
     public void onEnable() {
         instance = this;
-        Shared.setPluginType(PluginType.PAPER);
+        try {
+            Shared.setPluginType(PluginType.PAPER);
 
-        Utils.printLogo();
-        Logger.info("> UzlabinaManager - Paper @ " + this.getDescription().getVersion());
-        Logger.info("> Made by mayuna#8016");
+            Utils.printLogo();
+            Logger.info("> UzlabinaManager - Paper @ " + this.getDescription().getVersion());
+            Logger.info("> Made by mayuna#8016");
 
-        Logger.info("Loading config...");
-        loadConfiguration();
-        Logger.info("Server is recognized as " + PaperConfig.getServerType() + "!");
+            Logger.info("Loading config...");
+            loadConfiguration();
+            Logger.info("Server is recognized as " + PaperConfig.getServerType() + "!");
 
-        Logger.info("Registering listeners...");
-        registerListeners();
+            Logger.info("Registering listeners...");
+            registerListeners();
 
-        Logger.info("Loading managers...");
-        loadManagers();
+            Logger.info("Loading managers...");
+            loadManagers();
 
-        Logger.info("Loading commands...");
-        loadCommands();
+            Logger.info("Loading commands...");
+            loadCommands();
 
-        Logger.success("Loading done!");
+            Logger.success("Loading done!");
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            Logger.error("Exception occurred while loading plugin!");
+            crashed = true;
+            this.setEnabled(false);
+        }
     }
 
     @Override
@@ -59,9 +65,12 @@ public final class PaperMain extends JavaPlugin {
 
         this.getServer().getMessenger().unregisterIncomingPluginChannel(this, "BungeeCord");
 
-        UzlabinaPlayerManager.save();
+        if (!crashed) {
+            UzlabinaPlayerManager.save();
+        }
 
         Logger.info("o/");
+        instance = null;
     }
 
     private void loadManagers() {
@@ -74,6 +83,7 @@ public final class PaperMain extends JavaPlugin {
         ConfigurationSerialization.registerClass(ConfigSound.class, "ConfigSound");
         ConfigurationSerialization.registerClass(ConfigMessage.class, "ConfigMessage");
         ConfigurationSerialization.registerClass(ConfigScoreboard.class, "ConfigScoreboard");
+        ConfigurationSerialization.registerClass(ConfigDisableInteraction.class, "ConfigDisableInteraction");
 
         PaperConfig.load();
 
@@ -86,6 +96,8 @@ public final class PaperMain extends JavaPlugin {
         pluginManager.registerEvents(new PlayerJoinQuitListener(), this);
         pluginManager.registerEvents(new PlayerBlockBreakListener(), this);
         pluginManager.registerEvents(new PressurePlateListener(), this);
+        pluginManager.registerEvents(new ChatListener(), this);
+        pluginManager.registerEvents(new PlayerDisableInteractionListener(), this);
 
         if (BukkitUtils.isPluginEnabled("OpeNLogin")) {
             Logger.debug("OpeNLogin is loaded! Registering listener...");

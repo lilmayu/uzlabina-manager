@@ -8,7 +8,11 @@ import dev.mayuna.mayusjsonutils.objects.MayuJson;
 import dev.mayuna.uzlabinamanager.common.Logger;
 import dev.mayuna.uzlabinamanager.paper.PaperMain;
 import dev.mayuna.uzlabinamanager.paper.objects.UzlabinaPlayer;
+import dev.mayuna.uzlabinamanager.paper.util.BukkitUtils;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -30,9 +34,21 @@ public class UzlabinaPlayerManager {
 
     // Utils
 
-    public static UzlabinaPlayer getPlayer(UUID uuid) {
+    public static boolean hasData(OfflinePlayer offlinePlayer) {
+        return getPlayer(offlinePlayer) != null;
+    }
+
+    public static boolean hasDataByName(String name) {
+        return getPlayerByName(name) != null;
+    }
+
+    public static boolean hasDataByUuid(UUID uuid) {
+        return hasData(Bukkit.getOfflinePlayer(uuid));
+    }
+
+    public static UzlabinaPlayer getPlayer(OfflinePlayer offlinePlayer) {
         for (UzlabinaPlayer uzlabinaPlayer : players) {
-            if (uzlabinaPlayer.is(uuid)) {
+            if (uzlabinaPlayer.is(offlinePlayer)) {
                 return uzlabinaPlayer;
             }
         }
@@ -40,24 +56,49 @@ public class UzlabinaPlayerManager {
         return null;
     }
 
-    public static UzlabinaPlayer getPlayer(Player player) {
-        return getPlayer(player.getUniqueId());
+    public static UzlabinaPlayer getPlayerByName(String name) {
+        for (UzlabinaPlayer uzlabinaPlayer : players) {
+            if (uzlabinaPlayer.isByName(name)) {
+                return uzlabinaPlayer;
+            }
+        }
+
+        return null;
     }
 
-    public static UzlabinaPlayer getOrCreatePlayer(UUID uuid) {
-        UzlabinaPlayer uzlabinaPlayer = getPlayer(uuid);
+    public static UzlabinaPlayer getPlayerByUuid(UUID uuid) {
+        return getPlayer(Bukkit.getOfflinePlayer(uuid));
+    }
+
+    public static UzlabinaPlayer getOrCreatePlayer(OfflinePlayer offlinePlayer) {
+        UzlabinaPlayer uzlabinaPlayer = getPlayer(offlinePlayer);
 
         if (uzlabinaPlayer == null) {
-            uzlabinaPlayer = new UzlabinaPlayer(uuid);
+            uzlabinaPlayer = getPlayerByName(offlinePlayer.getName());
+        }
+
+        if (uzlabinaPlayer == null) {
+            uzlabinaPlayer = new UzlabinaPlayer(offlinePlayer);
 
             players.add(uzlabinaPlayer);
+        } else {
+            if (!uzlabinaPlayer.isByName(offlinePlayer.getName()) && uzlabinaPlayer.isByUuid(offlinePlayer.getUniqueId())) {
+                Logger.info("Hráč " + uzlabinaPlayer.getName() + " si změnil nick na " + offlinePlayer.getName() + " -> Přenastavuji...");
+                uzlabinaPlayer.setName(offlinePlayer.getName());
+            } else if (!uzlabinaPlayer.isByUuid(offlinePlayer.getUniqueId())) {
+                if (BukkitUtils.isPremium(offlinePlayer)) {
+                    Logger.info("Hráč " + uzlabinaPlayer.getName() + "(" + uzlabinaPlayer.getUuid() + ") se připojil jako originálka, přenastavuji mu UUID na " + offlinePlayer.getUniqueId() + "...");
+                    uzlabinaPlayer.setUuid(offlinePlayer.getUniqueId().toString());
+                } else if (!BukkitUtils.isPremium(offlinePlayer.getName(), offlinePlayer.getUniqueId()) && BukkitUtils.isPremium(uzlabinaPlayer.getName(), UUID.fromString(uzlabinaPlayer.getUuid()))) {
+                    Logger.error("Hráč " + offlinePlayer.getName() + "(" + offlinePlayer.getUniqueId() + ") se snaží připojit na originální účet " + uzlabinaPlayer.getName() + "(" + uzlabinaPlayer.getUuid() + ")!");
+                    if (offlinePlayer instanceof Player player) {
+                        player.kick(Component.text("§cProsím, zkus se znovu připojit. Pokud tato chyba přetrvává a máš Premium MC, zkus použít /autologin a připojit se znovu."));
+                    }
+                }
+            }
         }
 
         return uzlabinaPlayer;
-    }
-
-    public static UzlabinaPlayer getOrCreatePlayer(Player player) {
-        return getOrCreatePlayer(player.getUniqueId());
     }
 
     // Data
@@ -96,7 +137,6 @@ public class UzlabinaPlayerManager {
 
     private static MayuJson getMayuJson() {
         File dataFile = new File(filePath.replace("{plugin}", PaperMain.getInstance().getDataFolder().getName()));
-        MayuJson mayuJson = null;
 
         try {
             return JsonUtil.createOrLoadJsonFromFile(dataFile);

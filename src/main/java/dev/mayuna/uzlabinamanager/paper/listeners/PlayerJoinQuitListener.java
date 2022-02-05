@@ -11,7 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 
 public class PlayerJoinQuitListener implements Listener {
 
@@ -24,10 +24,6 @@ public class PlayerJoinQuitListener implements Listener {
         Logger.info("Loading player " + player.getName() + " (" + player.getUniqueId() + ")...");
 
         // On-join
-        if (PaperConfig.getOnJoinSpawnLocation() != null) {
-            player.teleportAsync(PaperConfig.getOnJoinSpawnLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
-        }
-
         if (PaperConfig.getOnJoinMessage() != null) {
             PaperConfig.getOnJoinMessage().send(player);
         }
@@ -56,5 +52,12 @@ public class PlayerJoinQuitListener implements Listener {
         Logger.info("Saving player " + player.getName() + " (" + player.getUniqueId() + ")...");
 
         ScoreboardManager.removePlayer(player);
+    }
+
+    @EventHandler
+    public void onPlayerSpawnLocationEvent(PlayerSpawnLocationEvent event) {
+        if (PaperConfig.getOnJoinSpawnLocation() != null) {
+            event.setSpawnLocation(PaperConfig.getOnJoinSpawnLocation());
+        }
     }
 }

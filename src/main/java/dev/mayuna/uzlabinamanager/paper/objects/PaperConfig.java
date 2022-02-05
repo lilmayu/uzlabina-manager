@@ -2,6 +2,7 @@ package dev.mayuna.uzlabinamanager.paper.objects;
 
 import dev.mayuna.uzlabinamanager.common.Shared;
 import dev.mayuna.uzlabinamanager.paper.PaperMain;
+import dev.mayuna.uzlabinamanager.paper.objects.config.ConfigDisableInteraction;
 import dev.mayuna.uzlabinamanager.paper.objects.config.ConfigMessage;
 import dev.mayuna.uzlabinamanager.paper.objects.config.ConfigScoreboard;
 import dev.mayuna.uzlabinamanager.paper.objects.config.ConfigSound;
@@ -40,8 +41,13 @@ public class PaperConfig {
     private static @Getter boolean economyEnabled;
     private static @Getter String economyCurrency;
 
+    // Chat
+    private static @Getter boolean chatEnabled;
+    private static @Getter String chatStyle;
+
     // Misc
     private static @Getter String miscDiscordInviteLink;
+    private static @Getter ConfigDisableInteraction miscDisableInteraction;
 
     // Pressure plate boosts
 
@@ -81,8 +87,13 @@ public class PaperConfig {
         economyEnabled = config.getBoolean("economy.enabled");
         economyCurrency = config.getString("economy.currency");
 
+        // Chat
+        chatEnabled = config.getBoolean("chat.enabled");
+        chatStyle = config.getString("chat.style");
+
         // Misc
         miscDiscordInviteLink = config.getString("misc.discord-invite-link");
+        miscDisableInteraction = config.getObject("misc.disable-interactions", ConfigDisableInteraction.class);
     }
 
     public static void setOnJoinSpawnLocation(Location location) {

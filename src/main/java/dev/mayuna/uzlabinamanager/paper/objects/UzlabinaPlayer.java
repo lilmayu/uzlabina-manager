@@ -2,14 +2,15 @@ package dev.mayuna.uzlabinamanager.paper.objects;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 
 import java.util.UUID;
 
 public class UzlabinaPlayer {
 
     // Data
-    private @Getter String uuid;
+    private @Getter @Setter String name;
+    private @Getter @Setter String uuid;
 
     // Economy
     private @Getter @Setter double money;
@@ -20,21 +21,26 @@ public class UzlabinaPlayer {
     public UzlabinaPlayer() {
     }
 
-    public UzlabinaPlayer(UUID uuid) {
-        this.uuid = uuid.toString();
+    public UzlabinaPlayer(OfflinePlayer offlinePlayer) {
+        this.name = offlinePlayer.getName();
+        this.uuid = offlinePlayer.getUniqueId().toString();
     }
 
     // Misc
 
-    public boolean is(String uuid) {
+    public boolean is(OfflinePlayer offlinePlayer) {
+        return isByName(offlinePlayer.getName()) && isByUuid(offlinePlayer.getUniqueId().toString());
+    }
+
+    public boolean isByName(String name) {
+        return this.name.equals(name);
+    }
+
+    public boolean isByUuid(String uuid) {
         return this.uuid.equals(uuid);
     }
 
-    public boolean is(UUID uuid) {
-        return is(uuid.toString());
-    }
-
-    public boolean is(Player player) {
-        return is(player.getUniqueId());
+    public boolean isByUuid(UUID uuid) {
+        return isByUuid(uuid.toString());
     }
 }

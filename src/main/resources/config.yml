@@ -40,18 +40,6 @@ on-auth:
     enabled: false
     server-name: "lobby"
 
-#pressure-plate-boosts:
-#  enabled: false
-#  type: HEAVY_WEIGHTED_PRESSURE_PLATE
-#  sound:
-#    ==: ConfigSound
-#    enabled: true
-#    name: ENTITY_DRAGON_FIREBALL_EXPLODE
-#    volume: 1.0
-#    pitch: 1.0
-#  strength: ## material;velocity multiplier
-#    - "GOLD_BLOCK;2.7"
-
 scoreboard:
   ==: ConfigScoreboard
   enabled: true
@@ -65,5 +53,17 @@ economy:
   enabled: false
   currency: CZK
 
+chat:
+  enabled: true
+  style: "{rank} §8| {name} §8» §r{message}"
+
 misc:
   discord-invite-link: https://discord.gg/HpPJHtPE3t
+  disable-interactions:
+    ==: ConfigDisableInteraction
+    enabled: false
+    ignore-creative: true
+    list-type: WHITELIST
+    entries:
+      - "wooden_button"
+      - "any:door"

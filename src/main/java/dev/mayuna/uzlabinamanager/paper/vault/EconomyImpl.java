@@ -56,7 +56,7 @@ public class EconomyImpl extends AbstractEconomy {
             return false;
         }
 
-        return UzlabinaPlayerManager.getPlayer(Bukkit.getOfflinePlayer(playerName).getUniqueId()) != null;
+        return UzlabinaPlayerManager.hasDataByName(playerName);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class EconomyImpl extends AbstractEconomy {
 
     @Override
     public double getBalance(String playerName) {
-        UzlabinaPlayer uzlabinaPlayer = UzlabinaPlayerManager.getPlayer(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+        UzlabinaPlayer uzlabinaPlayer = UzlabinaPlayerManager.getPlayerByName(playerName);
 
         if (uzlabinaPlayer == null) {
             return 0;
@@ -111,7 +111,7 @@ public class EconomyImpl extends AbstractEconomy {
             return new EconomyResponse(0.0, 0.0, EconomyResponse.ResponseType.FAILURE, "Hráč nemá dostatek peněz!");
         }
 
-        UzlabinaPlayer uzlabinaPlayer = UzlabinaPlayerManager.getPlayer(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+        UzlabinaPlayer uzlabinaPlayer = UzlabinaPlayerManager.getPlayerByName(playerName);
         uzlabinaPlayer.setMoney(finalBalance);
 
         Player player = Bukkit.getPlayer(playerName);
@@ -140,7 +140,7 @@ public class EconomyImpl extends AbstractEconomy {
         double currentBalance = getBalance(playerName);
         double finalBalance = currentBalance + amount;
 
-        UzlabinaPlayer uzlabinaPlayer = UzlabinaPlayerManager.getPlayer(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+        UzlabinaPlayer uzlabinaPlayer = UzlabinaPlayerManager.getPlayerByName(playerName);
         uzlabinaPlayer.setMoney(finalBalance);
 
         Player player = Bukkit.getPlayer(playerName);
@@ -203,7 +203,7 @@ public class EconomyImpl extends AbstractEconomy {
 
     @Override
     public boolean createPlayerAccount(String playerName) {
-        UzlabinaPlayerManager.getOrCreatePlayer(Bukkit.getOfflinePlayer(playerName).getUniqueId());
+        UzlabinaPlayerManager.getOrCreatePlayer(Bukkit.getOfflinePlayer(playerName));
         return true;
     }
 
